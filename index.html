@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shan | Portfolio</title>
+    <meta
+      name="description"
+      content="Shan's portfolio - software engineer experience, skills, and projects."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="navbar container" aria-label="Main navigation">
+        <a href="#home" class="brand">Shan</a>
+        <button class="menu-toggle" aria-expanded="false" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#projects">Projects</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="section home-section">
+        <div class="container home-grid">
+          <img
+            src="shan_silhouette.png"
+            alt="Silhouette of Shan"
+            class="home-image"
+          />
+          <div class="home-copy">
+            <p class="eyebrow">AI &amp; Machine Learning Engineer</p>
+            <h1>Hi There! I&apos;m Shan</h1>
+            <p>I&apos;m an AI &amp; Machine Learning Engineer at HSBC.</p>
+            <p>
+              I enjoy designing, developing, and optimizing AI and machine
+              learning models. I&apos;m passionate about problem-solving and
+              exploring the latest advancements in AI/ML.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="section">
+        <div class="container">
+          <h2>Skills</h2>
+          <div class="skills-grid">
+            <article class="skill-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python icon" />
+              <span>Python</span>
+            </article>
+            <article class="skill-chip">
+              <span class="text-icon">LG</span>
+              <span>LangGraph</span>
+            </article>
+            <article class="skill-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="FastAPI icon" />
+              <span>FastAPI</span>
+            </article>
+            <article class="skill-chip">
+              <span class="text-icon">FM</span>
+              <span>FastMCP</span>
+            </article>
+            <article class="skill-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes icon" />
+              <span>Kubernetes</span>
+            </article>
+            <article class="skill-chip">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" alt="Scikit-learn icon" />
+              <span>Scikit-learn</span>
+            </article>
+            <article class="skill-chip">
+              <span class="text-icon">CDB</span>
+              <span>ChromaDB</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience" class="section">
+        <div class="container">
+          <h2>Experience</h2>
+          <div class="timeline">
+            <article class="timeline-item">
+              <h3>HSBC - Data Scientist (Agentic AI)</h3>
+              <p>Sep 2025 - Present</p>
+            </article>
+            <article class="timeline-item">
+              <h3>HSBC - Python Engineer</h3>
+              <p>Jul 2024 - Sep 2025</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2>Projects</h2>
+            <p>Featured repositories from GitHub</p>
+          </div>
+          <div id="projects-grid" class="projects-grid" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

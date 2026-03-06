@@ -7,6 +7,77 @@ const sections = document.querySelectorAll("main section");
 const menuToggle = document.querySelector(".menu-toggle");
 const navList = document.querySelector(".nav-links");
 const projectsGrid = document.getElementById("projects-grid");
+const introOverlay = document.getElementById("intro-overlay");
+const introGreeting = document.getElementById("intro-greeting");
+
+function playIntro() {
+  if (!introOverlay || !introGreeting) return;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  const greetings = [
+    "Hello",
+    "مرحبا",
+    "Hola",
+    "नमस्ते",
+    "Bonjour",
+    "안녕하세요",
+    "Ciao",
+    "你好",
+    "Konnichiwa",
+    "Привет",
+  ];
+
+  document.body.classList.add("intro-active");
+
+  if (prefersReducedMotion) {
+    introGreeting.textContent = "Hello";
+    setTimeout(() => {
+      introOverlay.classList.add("is-hidden");
+      document.body.classList.remove("intro-active");
+    }, 500);
+    return;
+  }
+
+  const firstFadeMs = 1500;
+  const firstHoldMs = 420;
+  const switchIntervalMs = 160;
+  const holdAfterLastMs = 280;
+
+  introGreeting.textContent = greetings[0];
+  let greetingIndex = 1;
+  const advanceGreeting = () => {
+    if (greetingIndex >= greetings.length) {
+      setTimeout(() => {
+        introOverlay.classList.add("is-hidden");
+        document.body.classList.remove("intro-active");
+      }, holdAfterLastMs);
+      return;
+    }
+
+    introGreeting.textContent = greetings[greetingIndex];
+    greetingIndex += 1;
+    setTimeout(advanceGreeting, switchIntervalMs);
+  };
+
+  introGreeting.style.transition = "none";
+  introGreeting.style.opacity = "0";
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      introGreeting.style.transition = `opacity ${firstFadeMs}ms ease`;
+      introGreeting.style.opacity = "1";
+    });
+  });
+
+  setTimeout(() => {
+    introGreeting.style.transition = "none";
+    setTimeout(advanceGreeting, firstHoldMs);
+  }, firstFadeMs);
+}
+
+playIntro();
 
 menuToggle?.addEventListener("click", () => {
   const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";

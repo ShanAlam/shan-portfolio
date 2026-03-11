@@ -1,6 +1,9 @@
 const GITHUB_USERNAME = "ShanAlam";
 const PINNED_REPOS = [];
 const PROJECT_LIMIT = 6;
+const GITHUB_API_HEADERS = {
+  Accept: "application/vnd.github+json",
+};
 
 const navLinks = document.querySelectorAll(".nav-links a");
 const sections = document.querySelectorAll("main section");
@@ -9,6 +12,42 @@ const navList = document.querySelector(".nav-links");
 const projectsGrid = document.getElementById("projects-grid");
 const introOverlay = document.getElementById("intro-overlay");
 const introGreeting = document.getElementById("intro-greeting");
+
+function addSkillTooltips() {
+  const skillDescriptions = {
+    Python: "General-purpose language used for automation, APIs, and AI workflows.",
+    SQL: "Language for querying and managing relational data.",
+    HTML: "Markup language for structuring web pages.",
+    CSS: "Style language for designing and laying out web pages.",
+    JavaScript: "Programming language that powers interactivity on the web.",
+    LangGraph: "Framework for building stateful, multi-step LLM agent workflows.",
+    LangChain: "Framework for building LLM apps with tools, memory, and retrieval.",
+    FastMCP: "Framework for building MCP servers and tools quickly.",
+    RAG: "Retrieval-Augmented Generation combines search with LLM responses.",
+    ChromaDB: "Vector database for storing and searching embeddings.",
+    Scikitlearn: "Machine learning library for classical ML models and preprocessing.",
+    PyTorch: "Deep learning framework for building and training neural networks.",
+    Keras: "High-level API for building and training deep learning models.",
+    Kubernetes: "Container orchestration platform for deployment and scaling.",
+    Docker: "Platform for packaging apps into portable containers.",
+    "CI/CD": "Practices for automated build, test, and deployment pipelines.",
+    FastAPI: "High-performance Python framework for building APIs.",
+    Git: "Version control system for tracking code changes.",
+    GitHub: "Platform for hosting Git repositories and collaboration.",
+    Jira: "Project management and issue-tracking tool.",
+  };
+
+  const skillTags = document.querySelectorAll(".about-skill-groups .about-tag");
+  skillTags.forEach((tag) => {
+    const skillName = tag.textContent?.trim();
+    if (!skillName) return;
+    const description = skillDescriptions[skillName];
+    if (description) {
+      tag.dataset.tooltip = description;
+      tag.setAttribute("aria-label", `${skillName}: ${description}`);
+    }
+  });
+}
 
 function playIntro() {
   if (!introOverlay || !introGreeting) return;
@@ -78,6 +117,7 @@ function playIntro() {
 }
 
 playIntro();
+addSkillTooltips();
 
 menuToggle?.addEventListener("click", () => {
   const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
@@ -123,6 +163,11 @@ function projectCard(repo) {
 
   return `
     <a class="project-card" href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
+      <span class="project-folder-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+        </svg>
+      </span>
       <span class="project-hover-text" aria-hidden="true">Open on GitHub</span>
       <h3>${repo.name}</h3>
       <p>${repo.description || "No description available yet."}</p>
@@ -134,6 +179,11 @@ function projectCard(repo) {
 function fallbackProjectCard(repoName) {
   return `
     <a class="project-card" href="https://github.com/${GITHUB_USERNAME}/${repoName}" target="_blank" rel="noopener noreferrer">
+      <span class="project-folder-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
+        </svg>
+      </span>
       <span class="project-hover-text" aria-hidden="true">Open on GitHub</span>
       <h3>${repoName}</h3>
       <p>Open this project on GitHub.</p>
@@ -141,10 +191,50 @@ function fallbackProjectCard(repoName) {
   `;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchJsonWithRetry(url, options = {}, maxRetries = 2) {
+  let attempt = 0;
+
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url, options);
+
+      if (response.ok) {
+        return {
+          ok: true,
+          response,
+          data: await response.json(),
+        };
+      }
+
+      const retryable = response.status === 403 || response.status === 429 || response.status >= 500;
+      if (!retryable || attempt === maxRetries) {
+        return { ok: false, response, status: response.status };
+      }
+    } catch (error) {
+      if (attempt === maxRetries) {
+        return { ok: false, error };
+      }
+    }
+
+    const backoffMs = 300 * 2 ** attempt;
+    await sleep(backoffMs);
+    attempt += 1;
+  }
+
+  return { ok: false };
+}
+
 async function fetchRepo(repoName) {
-  const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${repoName}`);
-  if (!res.ok) return null;
-  return res.json();
+  const result = await fetchJsonWithRetry(
+    `https://api.github.com/repos/${GITHUB_USERNAME}/${repoName}`,
+    { headers: GITHUB_API_HEADERS },
+    1
+  );
+  return result.ok ? result.data : null;
 }
 
 function parseOwnerRepo(repo) {
@@ -178,22 +268,46 @@ async function fetchTopicsForRepo(repo) {
   const parsed = parseOwnerRepo(repo);
   if (!parsed) return { ...repo, topics: [] };
 
+  const existingTopics = Array.isArray(repo.topics) ? repo.topics : [];
+  if (existingTopics.length > 0) {
+    return { ...repo, topics: existingTopics };
+  }
+
   try {
-    const res = await fetch(
+    const topicsResult = await fetchJsonWithRetry(
       `https://api.github.com/repos/${parsed.owner}/${parsed.name}/topics`,
       {
-        headers: {
-          Accept: "application/vnd.github+json",
-        },
-      }
+        headers: GITHUB_API_HEADERS,
+      },
+      2
     );
 
-    if (!res.ok) return { ...repo, topics: [] };
-    const data = await res.json();
-    const topics = Array.isArray(data.names) ? data.names : [];
-    return { ...repo, topics };
+    if (topicsResult.ok) {
+      const topics = Array.isArray(topicsResult.data?.names) ? topicsResult.data.names : [];
+      if (topics.length > 0) {
+        return { ...repo, topics };
+      }
+    }
+
+    // Fallback endpoint: some responses include topics on the repository payload.
+    const repoResult = await fetchJsonWithRetry(
+      `https://api.github.com/repos/${parsed.owner}/${parsed.name}`,
+      {
+        headers: GITHUB_API_HEADERS,
+      },
+      1
+    );
+
+    if (repoResult.ok) {
+      const topics = Array.isArray(repoResult.data?.topics) ? repoResult.data.topics : [];
+      return { ...repo, topics };
+    }
+
+    console.warn(`Unable to load topics for ${parsed.owner}/${parsed.name}`);
+    return { ...repo, topics: existingTopics };
   } catch (error) {
-    return { ...repo, topics: [] };
+    console.warn(`Topic request failed for ${parsed.owner}/${parsed.name}`, error);
+    return { ...repo, topics: existingTopics };
   }
 }
 
@@ -288,7 +402,10 @@ async function loadProjects() {
 
     if (selectedRepos.length === 0) {
       const response = await fetch(
-        `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`,
+        {
+          headers: GITHUB_API_HEADERS,
+        }
       );
 
       if (!response.ok) {

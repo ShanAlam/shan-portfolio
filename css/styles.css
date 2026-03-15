@@ -32,14 +32,19 @@ html::-webkit-scrollbar {
 body {
   margin: 0;
   color: var(--text-main);
-  background: var(--bg-main);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: none;
   font-family: "Montserrat", sans-serif;
   font-weight: 300;
   font-size: 1.25rem;
   line-height: 1.6;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg-main);
 }
 
 body.intro-active {
@@ -581,7 +586,7 @@ h2 {
   box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
 }
 
-@media (max-width: 860px) {
+@media (hover: none) and (pointer: coarse) {
   .about-main-top.in-view,
   .about-skill-groups.in-view {
     transform: translateY(-3px);
@@ -615,7 +620,7 @@ h2 {
   transform: scale(1.04);
 }
 
-@media (max-width: 860px) {
+@media (hover: none) and (pointer: coarse) {
   .about-side-card.in-view .about-side-icon {
     background: rgba(0, 255, 132, 0.24);
     border-color: rgba(0, 255, 132, 0.6);
@@ -705,7 +710,7 @@ h2 {
   line-height: 1;
 }
 
-@media (max-width: 860px) {
+@media (hover: none) and (pointer: coarse) {
   .experience-cv-link {
     min-height: 38px;
     font-size: 0.78rem;
@@ -778,7 +783,7 @@ h2 {
   box-shadow: 0 0 0 3px rgba(0, 255, 132, 0.2);
 }
 
-@media (max-width: 860px) {
+@media (hover: none) and (pointer: coarse) {
   .experience-card.in-view {
     transform: translateY(-4px);
     border-color: var(--accent);
@@ -910,7 +915,7 @@ h2 {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
 }
 
-@media (min-width: 861px) {
+@media (hover: hover) and (pointer: fine) {
   .project-github-icon {
     padding: 0.28rem 0.55rem;
     border-radius: 999px;
@@ -924,7 +929,7 @@ h2 {
   }
 }
 
-@media (max-width: 860px) {
+@media (hover: none) and (pointer: coarse) {
   .project-card.in-view {
     border-color: var(--accent);
     transform: translateY(-4px);
@@ -978,50 +983,46 @@ h2 {
   padding: 1rem;
 }
 
-@media (max-width: 860px) {
-  body {
-    background-attachment: scroll;
-    background-position: center top;
-  }
-
+@media (hover: none) and (pointer: coarse) {
   .about-main-top:hover,
-  .about-skill-groups:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: none;
+  .about-main-top:active,
+  .about-main-top:focus-visible,
+  .about-skill-groups:hover,
+  .about-skill-groups:active,
+  .about-skill-groups:focus-visible,
+  .about-side-card:hover,
+  .about-side-card:active,
+  .about-side-card:focus-visible,
+  .experience-card:hover,
+  .experience-card:active,
+  .experience-card:focus-visible,
+  .project-card:hover,
+  .project-card:active,
+  .project-card:focus-visible {
+    transform: none !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+    background: var(--surface) !important;
   }
 
-  .about-side-card:hover {
-    transform: none;
-    border-color: var(--border);
-    background: rgba(255, 255, 255, 0.04);
-    box-shadow: none;
+  .about-side-card:hover .about-side-icon,
+  .about-side-card:active .about-side-icon,
+  .about-side-card:focus-visible .about-side-icon {
+    background: rgba(0, 255, 132, 0.14) !important;
+    border-color: rgba(0, 255, 132, 0.35) !important;
+    transform: none !important;
   }
 
-  .about-side-card:hover .about-side-icon {
-    background: rgba(0, 255, 132, 0.14);
-    border-color: rgba(0, 255, 132, 0.35);
-    transform: none;
+  .experience-card:hover::before,
+  .experience-card:active::before,
+  .experience-card:focus-visible::before {
+    background: #35d4ff !important;
+    transform: translateX(-50%) !important;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3) !important;
   }
+}
 
-  .experience-card:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-  }
-
-  .experience-card:hover::before {
-    background: #35d4ff;
-    transform: translateX(-50%);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
-  }
-
-  .project-card:hover {
-    transform: none;
-    border-color: var(--border);
-    box-shadow: none;
-  }
-
+@media (max-width: 860px) {
   .site-header {
     padding-top: 6px;
   }

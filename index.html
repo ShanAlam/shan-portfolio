@@ -8,16 +8,16 @@
       name="description"
       content="Shan's portfolio - software engineer experience, skills, and projects."
     />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="icon" type="image/png" href="shan-text-favicon.png" sizes="32x32" />
-    <link rel="shortcut icon" href="shan-text-favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicons/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <div class="intro-overlay" id="intro-overlay" aria-hidden="true">
@@ -82,9 +82,11 @@
       <section id="home" class="section home-section">
         <div class="container home-grid">
             <img
-              src="shan-silhouette-transparent.png"
+              src="assets/images/shan-silhouette-transparent.png"
               alt="Silhouette of Shan"
               class="home-image"
+              loading="eager"
+              decoding="async"
             />
           <div class="home-copy">
             <h1 class="home-title">
@@ -92,7 +94,7 @@
             </h1>
             <p class="home-subtitle">AI Engineer @ HSBC London, specialising in Agentic AI</p>
             <p class="home-bio">
-              I focus on building Agentic systems that deliver real business value. My responsibilities includes designing Agentic workflows, developing MCP servers / tools, and building vector databases.
+              I focus on building Agentic systems that deliver real business value. My responsibilities include designing Agentic workflows, developing MCP servers / tools, and building vector databases.
             </p>
             <a href="#skills" class="scroll-indicator" aria-label="Scroll to about me section">
               <span>Scroll to explore</span>
@@ -116,7 +118,7 @@
               </div>
               <div class="about-skill-groups">
                 <article class="about-skill-group">
-                  <h4>Programming Languages</h4>
+                  <h3>Programming Languages</h3>
                   <div class="about-tag-list">
                     <span class="about-tag"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="" />Python</span>
                     <span class="about-tag">
@@ -134,7 +136,7 @@
                   </div>
                 </article>
                 <article class="about-skill-group">
-                  <h4>AI &amp; Agentic</h4>
+                  <h3>AI &amp; Agentic</h3>
                   <div class="about-tag-list">
                     <span class="about-tag"><img src="https://cdn.simpleicons.org/langgraph/FFFFFF" alt="" />LangGraph</span>
                     <span class="about-tag"><img src="https://cdn.simpleicons.org/langchain/FFFFFF" alt="" />LangChain</span>
@@ -162,7 +164,7 @@
                   </div>
                 </article>
                 <article class="about-skill-group">
-                  <h4>DevOps &amp; Cloud</h4>
+                  <h3>DevOps &amp; Cloud</h3>
                   <div class="about-tag-list">
                     <span class="about-tag"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="" />Kubernetes</span>
                     <span class="about-tag"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="" />Docker</span>
@@ -170,7 +172,7 @@
                   </div>
                 </article>
                 <article class="about-skill-group">
-                  <h4>Tools &amp; Frameworks</h4>
+                  <h3>Tools &amp; Frameworks</h3>
                   <div class="about-tag-list">
                     <span class="about-tag"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="" />FastAPI</span>
                     <span class="about-tag"><img src="https://cdn.simpleicons.org/pydantic/FFFFFF" alt="" />Pydantic</span>
@@ -208,7 +210,7 @@
                 <div class="about-side-icon">🥋</div>
                 <div>
                   <h4>Hobbies</h4>
-                  <p>In my spare time I enjoy practicing jiujitsu, going to the gym, and admitedly am a bit of a podcast-aholic.</p>
+                  <p>In my spare time I enjoy practicing jiujitsu, going to the gym, and admittedly am a bit of a podcast-aholic.</p>
                 </div>
               </article>
             </aside>
@@ -224,7 +226,7 @@
             <article class="experience-card">
               <div class="experience-head">
                 <div>
-                  <h3>Ai Engineer (Agentic AI)</h3>
+                  <h3>AI Engineer (Agentic AI)</h3>
                   <p class="experience-company">HSBC</p>
                 </div>
                 <p class="experience-date">Sep 2025 - Present</p>
@@ -313,6 +315,6 @@
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>

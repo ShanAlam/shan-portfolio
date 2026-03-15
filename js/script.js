@@ -202,6 +202,7 @@ addSkillTooltips();
 addScrollHoverStates();
 
 menuToggle?.addEventListener("click", () => {
+  if (window.matchMedia("(max-width: 860px)").matches) return;
   const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
   menuToggle.setAttribute("aria-expanded", String(!isExpanded));
   navList.classList.toggle("open");
@@ -209,6 +210,7 @@ menuToggle?.addEventListener("click", () => {
 
 navLinks.forEach((link) => {
   link.addEventListener("click", () => {
+    if (window.matchMedia("(max-width: 860px)").matches) return;
     navList.classList.remove("open");
     menuToggle?.setAttribute("aria-expanded", "false");
   });
@@ -233,18 +235,28 @@ const observer = new IntersectionObserver(
 sections.forEach((section) => observer.observe(section));
 
 function projectCard(repo) {
+  const safeName = escapeHtml(repo.name || "");
+  const safeDescription = escapeHtml(repo.description || "No description available yet.");
+  const safeHref = escapeAttr(repo.html_url || "#");
+  const topicsUnavailable = Boolean(repo.topicsUnavailable);
   const topicsHtml = Array.isArray(repo.topics) && repo.topics.length
     ? `
       <div class="project-topics">
         ${repo.topics
-          .map((topic) => `<span class="topic-chip">${topic}</span>`)
+          .map((topic) => `<span class="topic-chip">${escapeHtml(topic)}</span>`)
           .join("")}
       </div>
     `
+    : topicsUnavailable
+      ? `
+        <div class="project-topics">
+          <span class="topic-chip topic-unavailable">Topics unavailable</span>
+        </div>
+      `
     : "";
 
   return `
-    <a class="project-card" href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
+    <a class="project-card" href="${safeHref}" target="_blank" rel="noopener noreferrer">
       <span class="project-folder-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
@@ -256,16 +268,18 @@ function projectCard(repo) {
         </svg>
         <span class="project-github-label">Open in GitHub</span>
       </span>
-      <h3>${repo.name}</h3>
-      <p>${repo.description || "No description available yet."}</p>
+      <h3>${safeName}</h3>
+      <p>${safeDescription}</p>
       ${topicsHtml}
     </a>
   `;
 }
 
 function fallbackProjectCard(repoName) {
+  const safeName = escapeHtml(repoName);
+  const safeHref = escapeAttr(`https://github.com/${GITHUB_USERNAME}/${repoName}`);
   return `
-    <a class="project-card" href="https://github.com/${GITHUB_USERNAME}/${repoName}" target="_blank" rel="noopener noreferrer">
+    <a class="project-card" href="${safeHref}" target="_blank" rel="noopener noreferrer">
       <span class="project-folder-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
@@ -277,23 +291,47 @@ function fallbackProjectCard(repoName) {
         </svg>
         <span class="project-github-label">Open in GitHub</span>
       </span>
-      <h3>${repoName}</h3>
+      <h3>${safeName}</h3>
       <p>Open this project on GitHub.</p>
     </a>
   `;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttr(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function fetchJsonWithRetry(url, options = {}, maxRetries = 2) {
+async function fetchJsonWithRetry(url, options = {}, maxRetries = 2, timeoutMs = 6000) {
   let attempt = 0;
 
   while (attempt <= maxRetries) {
+    const controller = options.signal ? null : new AbortController();
+    const signal = options.signal ?? controller?.signal;
+    const timeoutId = controller
+      ? setTimeout(() => controller.abort(), timeoutMs)
+      : null;
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(url, { ...options, signal });
 
+      if (timeoutId) clearTimeout(timeoutId);
       if (response.ok) {
         return {
           ok: true,
@@ -307,6 +345,7 @@ async function fetchJsonWithRetry(url, options = {}, maxRetries = 2) {
         return { ok: false, response, status: response.status };
       }
     } catch (error) {
+      if (timeoutId) clearTimeout(timeoutId);
       if (attempt === maxRetries) {
         return { ok: false, error };
       }
@@ -396,10 +435,10 @@ async function fetchTopicsForRepo(repo) {
     }
 
     console.warn(`Unable to load topics for ${parsed.owner}/${parsed.name}`);
-    return { ...repo, topics: existingTopics };
+    return { ...repo, topics: existingTopics, topicsUnavailable: true };
   } catch (error) {
     console.warn(`Topic request failed for ${parsed.owner}/${parsed.name}`, error);
-    return { ...repo, topics: existingTopics };
+    return { ...repo, topics: existingTopics, topicsUnavailable: true };
   }
 }
 

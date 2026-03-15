@@ -591,6 +591,12 @@ h2 {
     opacity: 1;
     transform: translateY(0);
   }
+  .project-github-icon {
+    padding: 0.28rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
   .about-main-top.in-view,
   .about-skill-groups.in-view {
     transform: translateY(-3px);

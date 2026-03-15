@@ -132,6 +132,9 @@ function addScrollHoverStates() {
   if (addScrollHoverStates.rafId == null) {
     addScrollHoverStates.rafId = null;
   }
+  if (addScrollHoverStates.idleTimer == null) {
+    addScrollHoverStates.idleTimer = null;
+  }
 
   const updateActive = () => {
     addScrollHoverStates.rafId = null;
@@ -176,12 +179,18 @@ function addScrollHoverStates() {
   const scheduleUpdate = () => {
     if (addScrollHoverStates.rafId != null) return;
     addScrollHoverStates.rafId = window.requestAnimationFrame(updateActive);
+    if (addScrollHoverStates.idleTimer) {
+      clearTimeout(addScrollHoverStates.idleTimer);
+    }
+    addScrollHoverStates.idleTimer = window.setTimeout(updateActive, 120);
   };
 
   if (!addScrollHoverStates.bound) {
     addScrollHoverStates.bound = true;
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("touchend", scheduleUpdate, { passive: true });
+    window.addEventListener("orientationchange", scheduleUpdate);
   }
 
   updateActive();

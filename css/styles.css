@@ -587,6 +587,10 @@ h2 {
 }
 
 @media (hover: none) and (pointer: coarse) {
+  .project-card.in-view .project-github-icon {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .about-main-top.in-view,
   .about-skill-groups.in-view {
     transform: translateY(-3px);

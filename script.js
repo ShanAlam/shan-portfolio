@@ -35,6 +35,8 @@ function addSkillTooltips() {
     Git: "Version control system for tracking code changes.",
     GitHub: "Platform for hosting Git repositories and collaboration.",
     Jira: "Project management and issue-tracking tool.",
+    Pydantic: "Library for data validation and parsing using type hints.",
+    Pytest: "Framework for writing and running automated tests.",
   };
 
   const skillTags = document.querySelectorAll(".about-skill-groups .about-tag");
@@ -116,8 +118,88 @@ function playIntro() {
   }, firstFadeMs);
 }
 
+function addScrollHoverStates() {
+  let targets = Array.from(
+    document.querySelectorAll(
+      ".about-main-top, .about-skill-groups, .about-side-card, .experience-card, .project-card"
+    )
+  );
+  if (!targets.length) return;
+
+  if (!addScrollHoverStates.activeTarget) {
+    addScrollHoverStates.activeTarget = null;
+  }
+  if (addScrollHoverStates.rafId == null) {
+    addScrollHoverStates.rafId = null;
+  }
+
+  const updateActive = () => {
+    addScrollHoverStates.rafId = null;
+    const viewportCenter = window.innerHeight / 2;
+    let bestTarget = null;
+    let bestDistance = Infinity;
+    let lastVisible = null;
+
+    targets.forEach((target) => {
+      const rect = target.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+      lastVisible = target;
+      const targetCenter = rect.top + rect.height / 2;
+      const isWhatIDo = target.classList.contains("about-main-top");
+      if (isWhatIDo && rect.top > window.innerHeight * 0.52) return;
+      const isSkillGroups = target.classList.contains("about-skill-groups");
+      if (isSkillGroups && rect.top > window.innerHeight * 0.7) return;
+      const distance = Math.abs(targetCenter - viewportCenter);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestTarget = target;
+      }
+    });
+
+    const scrolledToBottom = window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 2;
+    if (scrolledToBottom && lastVisible) {
+      bestTarget = lastVisible;
+    }
+
+    if (bestTarget !== addScrollHoverStates.activeTarget) {
+      if (addScrollHoverStates.activeTarget) {
+        addScrollHoverStates.activeTarget.classList.remove("in-view");
+      }
+      addScrollHoverStates.activeTarget = bestTarget;
+      if (addScrollHoverStates.activeTarget) {
+        addScrollHoverStates.activeTarget.classList.add("in-view");
+      }
+    }
+  };
+
+  const scheduleUpdate = () => {
+    if (addScrollHoverStates.rafId != null) return;
+    addScrollHoverStates.rafId = window.requestAnimationFrame(updateActive);
+  };
+
+  if (!addScrollHoverStates.bound) {
+    addScrollHoverStates.bound = true;
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+  }
+
+  updateActive();
+
+  // Allow re-scan when new cards are injected (e.g., projects).
+  addScrollHoverStates.refresh = () => {
+    targets = Array.from(
+      document.querySelectorAll(
+        ".about-main-top, .about-skill-groups, .about-side-card, .experience-card, .project-card"
+      )
+    );
+    updateActive();
+  };
+}
+
 playIntro();
 addSkillTooltips();
+addScrollHoverStates();
 
 menuToggle?.addEventListener("click", () => {
   const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
@@ -168,7 +250,12 @@ function projectCard(repo) {
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
         </svg>
       </span>
-      <span class="project-hover-text" aria-hidden="true">Open on GitHub</span>
+      <span class="project-github-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.41-4.04-1.41-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.74.08-.74 1.2.09 1.83 1.23 1.83 1.23 1.08 1.84 2.82 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.31-5.48-1.34-5.48-5.94 0-1.31.47-2.37 1.23-3.2-.12-.31-.53-1.56.12-3.24 0 0 1-.32 3.3 1.22a11.5 11.5 0 0 1 6 0c2.3-1.54 3.3-1.22 3.3-1.22.65 1.68.24 2.93.12 3.24.76.83 1.23 1.89 1.23 3.2 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.3c0 .32.22.7.83.58A12 12 0 0 0 12 .5z"></path>
+        </svg>
+        <span class="project-github-label">Open in GitHub</span>
+      </span>
       <h3>${repo.name}</h3>
       <p>${repo.description || "No description available yet."}</p>
       ${topicsHtml}
@@ -184,7 +271,12 @@ function fallbackProjectCard(repoName) {
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path>
         </svg>
       </span>
-      <span class="project-hover-text" aria-hidden="true">Open on GitHub</span>
+      <span class="project-github-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.41-4.04-1.41-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.74.08-.74 1.2.09 1.83 1.23 1.83 1.23 1.08 1.84 2.82 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.31-5.48-1.34-5.48-5.94 0-1.31.47-2.37 1.23-3.2-.12-.31-.53-1.56.12-3.24 0 0 1-.32 3.3 1.22a11.5 11.5 0 0 1 6 0c2.3-1.54 3.3-1.22 3.3-1.22.65 1.68.24 2.93.12 3.24.76.83 1.23 1.89 1.23 3.2 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.3c0 .32.22.7.83.58A12 12 0 0 0 12 .5z"></path>
+        </svg>
+        <span class="project-github-label">Open in GitHub</span>
+      </span>
       <h3>${repoName}</h3>
       <p>Open this project on GitHub.</p>
     </a>
@@ -431,6 +523,9 @@ async function loadProjects() {
 
     selectedRepos = await Promise.all(selectedRepos.map(fetchTopicsForRepo));
     projectsGrid.innerHTML = selectedRepos.map(projectCard).join("");
+    if (typeof addScrollHoverStates.refresh === "function") {
+      addScrollHoverStates.refresh();
+    }
   } catch (error) {
     if (PINNED_REPOS.length > 0) {
       projectsGrid.innerHTML = PINNED_REPOS.map(fallbackProjectCard).join("");

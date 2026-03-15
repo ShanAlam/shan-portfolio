@@ -984,38 +984,38 @@ h2 {
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .about-main-top:hover,
-  .about-main-top:active,
-  .about-main-top:focus-visible,
-  .about-skill-groups:hover,
-  .about-skill-groups:active,
-  .about-skill-groups:focus-visible,
-  .about-side-card:hover,
-  .about-side-card:active,
-  .about-side-card:focus-visible,
-  .experience-card:hover,
-  .experience-card:active,
-  .experience-card:focus-visible,
-  .project-card:hover,
-  .project-card:active,
-  .project-card:focus-visible {
+  .about-main-top:not(.in-view):hover,
+  .about-main-top:not(.in-view):active,
+  .about-main-top:not(.in-view):focus-visible,
+  .about-skill-groups:not(.in-view):hover,
+  .about-skill-groups:not(.in-view):active,
+  .about-skill-groups:not(.in-view):focus-visible,
+  .about-side-card:not(.in-view):hover,
+  .about-side-card:not(.in-view):active,
+  .about-side-card:not(.in-view):focus-visible,
+  .experience-card:not(.in-view):hover,
+  .experience-card:not(.in-view):active,
+  .experience-card:not(.in-view):focus-visible,
+  .project-card:not(.in-view):hover,
+  .project-card:not(.in-view):active,
+  .project-card:not(.in-view):focus-visible {
     transform: none !important;
     border-color: var(--border) !important;
     box-shadow: none !important;
     background: var(--surface) !important;
   }
 
-  .about-side-card:hover .about-side-icon,
-  .about-side-card:active .about-side-icon,
-  .about-side-card:focus-visible .about-side-icon {
+  .about-side-card:not(.in-view):hover .about-side-icon,
+  .about-side-card:not(.in-view):active .about-side-icon,
+  .about-side-card:not(.in-view):focus-visible .about-side-icon {
     background: rgba(0, 255, 132, 0.14) !important;
     border-color: rgba(0, 255, 132, 0.35) !important;
     transform: none !important;
   }
 
-  .experience-card:hover::before,
-  .experience-card:active::before,
-  .experience-card:focus-visible::before {
+  .experience-card:not(.in-view):hover::before,
+  .experience-card:not(.in-view):active::before,
+  .experience-card:not(.in-view):focus-visible::before {
     background: #35d4ff !important;
     transform: translateX(-50%) !important;
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3) !important;

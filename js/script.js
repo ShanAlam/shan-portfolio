@@ -67,7 +67,7 @@ function playIntro() {
     "Ciao",
     "你好",
     "Konnichiwa",
-    "Привет",
+    "Cześć",
   ];
 
   document.body.classList.add("intro-active");

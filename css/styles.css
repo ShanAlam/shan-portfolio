@@ -99,6 +99,7 @@ img {
     rgba(0, 0, 0, 0.15) 70%,
     transparent
   );
+  -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
 }
 

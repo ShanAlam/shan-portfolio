@@ -88,9 +88,15 @@ function playIntro() {
 
   introGreeting.textContent = greetings[0];
   let greetingIndex = 1;
+  let advanceTimer = null;
+  let hideTimer = null;
+  let introDone = false;
   const advanceGreeting = () => {
+    if (introDone) return;
     if (greetingIndex >= greetings.length) {
-      setTimeout(() => {
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        introDone = true;
         introOverlay.classList.add("is-hidden");
         document.body.classList.remove("intro-active");
       }, holdAfterLastMs);
@@ -99,7 +105,8 @@ function playIntro() {
 
     introGreeting.textContent = greetings[greetingIndex];
     greetingIndex += 1;
-    setTimeout(advanceGreeting, switchIntervalMs);
+    if (advanceTimer) clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(advanceGreeting, switchIntervalMs);
   };
 
   introGreeting.style.transition = "none";

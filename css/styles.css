@@ -1161,6 +1161,45 @@ h2 {
   }
 }
 
+@media (hover: none) and (pointer: coarse) and (max-height: 740px) {
+  .home-section {
+    padding-top: calc(var(--nav-height) - 0.35rem);
+    padding-bottom: 0.9rem;
+  }
+
+  .home-grid {
+    gap: 0.3rem;
+  }
+
+  .home-image {
+    width: min(210px, 62vw);
+    padding-block-start: 0;
+  }
+
+  .home-title {
+    font-size: clamp(1.55rem, 6.6vw, 2rem);
+    padding-block-end: 2px;
+  }
+
+  .home-subtitle {
+    font-size: clamp(0.82rem, 3.6vw, 1.1rem);
+  }
+
+  .home-bio {
+    font-size: clamp(0.62rem, 2.6vw, 0.78rem);
+    padding-block: 4px;
+  }
+
+  .home-copy p:not(.home-subtitle):not(.home-bio) {
+    margin: 0.25rem 0;
+  }
+
+  .scroll-indicator {
+    margin-top: 0.2rem;
+    font-size: 0.78rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav-brand-icons::after {
     animation: none;

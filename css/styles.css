@@ -749,12 +749,12 @@ h2 {
   content: "";
   position: absolute;
   left: 0.62rem;
-  top: -5rem;
+  top: calc(1rem + 7px);
   bottom: -5rem;
   width: 2px;
   background: linear-gradient(
     180deg,
-    rgba(53, 212, 255, 0) 0%,
+    rgba(53, 212, 255, 0.92) 0%,
     rgba(53, 212, 255, 0.92) 18%,
     rgba(0, 255, 132, 0.92) 82%,
     rgba(0, 255, 132, 0) 100%
@@ -1136,6 +1136,7 @@ h2 {
 
   .experience-timeline::before {
     left: 0.4rem;
+    top: calc(0.95rem + 7px);
   }
 
   .experience-card::before {

@@ -1162,8 +1162,8 @@ h2 {
 }
 
 @media (hover: none) and (pointer: coarse) and (max-height: 740px) {
-  #experience .about-subtitle {
-    padding-left: 1.55rem;
+  #experience .container {
+    padding-inline: 1.2rem;
   }
 
   .home-section {

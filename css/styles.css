@@ -259,6 +259,8 @@ img {
 .section {
   padding: calc(var(--nav-height) + 1rem) 0 2.5rem;
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
 }
 
 .home-section {
@@ -266,6 +268,8 @@ img {
   place-items: center;
   padding-top: calc(var(--nav-height) + 0.5rem);
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
 }
 
 .home-grid {

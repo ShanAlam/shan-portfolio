@@ -60,9 +60,9 @@ function playIntro() {
   const greetings = [
     "Hello",
     "مرحبا",
-    "Hola",
     "नमस्ते",
     "Bonjour",
+    "Hola",
     "안녕하세요",
     "Ciao",
     "你好",

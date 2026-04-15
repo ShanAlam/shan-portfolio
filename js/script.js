@@ -51,6 +51,21 @@ function addSkillTooltips() {
   });
 }
 
+function addSkillIconFallbacks() {
+  const skillIcons = document.querySelectorAll(".about-skill-groups .about-tag img");
+  skillIcons.forEach((icon) => {
+    const fallbackSrc = icon.dataset.fallbackSrc;
+    if (!fallbackSrc) return;
+
+    icon.addEventListener("error", () => {
+      // Prevent retry loops if the fallback image is unavailable for any reason.
+      if (icon.dataset.fallbackApplied === "true") return;
+      icon.dataset.fallbackApplied = "true";
+      icon.src = fallbackSrc;
+    });
+  });
+}
+
 function playIntro() {
   if (!introOverlay || !introGreeting) return;
 
@@ -215,6 +230,7 @@ function addScrollHoverStates() {
 
 playIntro();
 addSkillTooltips();
+addSkillIconFallbacks();
 addScrollHoverStates();
 
 menuToggle?.addEventListener("click", () => {
